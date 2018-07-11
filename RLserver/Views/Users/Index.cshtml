@@ -1,0 +1,65 @@
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Serialization
+@model IEnumerable<RLserver.Models.DTOs.UserDTO>
+
+@{
+    ViewBag.Title = "Users";
+}
+
+<h1>Users</h1>
+
+<hr/>
+
+<table class="table table-hover table-condensed" id="teams">
+    <thead class="">
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Teams</th>
+    </tr>
+    </thead>
+</table>
+
+@section scripts
+{
+    <script>
+            var tableData = @Html.Raw(JsonConvert.SerializeObject(Model, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+            var teamsDataTable = $("#teams").DataTable({
+                dom: "<'row'<'col-md-9 col-sm-12'f><'col-md-3 col-sm-12'l>>" +
+                     "<'row'tr>" +
+                     "<'row'<'col-md-4 col-sm-12'i><'col-md-8 col-sm-12'p>>",
+                data: tableData,
+                autoWidth: false,
+                order: [1, "asc"],
+                columns: [
+                    {
+                        data: "",
+                        orderable: false,
+                        className: "text-center",
+                        render: function(data, type, user) {
+                            if (user.profilePicBase64Enc != null) {
+                                return "<img src='data:image/png;base64," +
+                                    user.profilePicBase64Enc +
+                                    "' alt='profile pic' height='48' width='48'/>";
+                            } else {
+                                return "<i class='far fa-user-circle fa-2x'></i>";
+                            }
+                        }
+                    },
+                    {
+                        data: "",
+                        render: function(data, type, user) {
+                            return "<a class='link' href='/users/" + user.id + "'>" + user.username + "</a>";
+                        }
+                    },
+                    {
+                        data: "",
+                        render: function(data, type, user) {
+                            return user.teams.length;
+                        }
+                    }
+                ]
+            })
+
+    </script>
+}

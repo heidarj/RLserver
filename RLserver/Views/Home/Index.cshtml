@@ -1,31 +1,42 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Home";
 }
 
 <div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    <div class="media">
+        <img src="/static/rocket.svg" width="64" height="64" class="d-flex m-2"/>
+        <div class="media-body">
+            <h1>Rocket Server</h1>
+            <p class="lead">Rocket Server helps you plan Rocket League tournaments and matches, track goals and manage teams. Login and registration is easy with Facebook, Google or a Microsoft account, or if you prefer, you can create a native app account.</p>
+            <p><a href="/account/login" class="btn btn-primary btn-lg">Let's go!</a></p>
+
+        </div>
+    </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
+<div class="card-columns">
+    <div class="card card-body">
+        <h4 class="card-title">About the project</h4>
+        <h6 class="card-subtitle text-muted mb-4">What? Why? How?</h6>
+        <p class="card-text">
+            This web-app was created as a hobby project to manage Rocket League tournaments, created with ASP.Net MVC and Entity Framework. 
         </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        <p><a class="btn btn-dark" href="#">Learn more <i class="far fa-info-circle fa-lg m-1"></i></a></p>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    <div class="card card-body">
+        <h4 class="card-title">Fork me!</h4>
+        <h6 class="card-subtitle text-muted mb-4">We're on GitHub</h6>
+        <p class="card-text">
+            The Rocket server project and source code is available on GitHub, along with instructions on how to run your own server. Pull requests and bug reports are also welcome.
+        </p>
+        <p><a class="btn btn-dark" href="#">GitHub <i class="fab fa-github fa-lg m-1"></i></a></p>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="card card-body">
+        <h4 class="card-title">Get the overlay</h4>
+        <h6 class="card-subtitle text-muted mb-4">There's an app for that!</h6>
+        <p class="card-text">
+            Get the overlay PC app which adds user info to the Rocket League screen! Smartphone apps are also planned for release.
+        </p>
+        <p><a class="btn btn-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more</a></p>
     </div>
 </div>

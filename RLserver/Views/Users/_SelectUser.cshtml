@@ -1,0 +1,54 @@
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Serialization
+@model IEnumerable<RLserver.Models.DTOs.UserDTO>
+
+<table id="userSelectTable" class="table table-condensed">
+    <thead>
+    <tr>
+        <th></th>
+        <th>Username</th>
+        <th></th>
+    </tr>
+    </thead>
+</table>
+
+<script>
+    var tableData = @Html.Raw(JsonConvert.SerializeObject(Model, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+    $("#userSelectTable").DataTable({
+        dom: "ftrp",
+        autoWidth: false,
+        order: [1, 'asc'],
+        data: tableData,
+        columns: [
+            {
+                data: "",
+                orderable: false,
+                render: function(data, type, user) {
+                    if (user.profilePicBase64Enc != null) {
+                        return "<img src='data:image/png;base64," +
+                            user.profilePicBase64Enc +
+                            "' alt='profile pic' height='48' width='48'/>";
+                    } else {
+                        return "<i class='far fa-user-circle fa-3x'></i>"
+                    }
+                }
+            },
+            {
+                data: "username",
+                render: function(data, type, user) {
+                    return "<a href='#' class='btn btn-link'>" + user.username + "</a>";
+                }
+            },
+            {
+                data: "",
+                orderable: false,
+                render: function(data, type, user) {
+                    return '<label class="checkbox-fa-container userSelectCheckbox">'
+                        + '<input type="checkbox" data-member-id="' + user.id + '">'
+                        +  '<span class="checkbox-fa"></span>'
+                        + '</label>';
+                }
+            }
+        ]
+    });
+</script>

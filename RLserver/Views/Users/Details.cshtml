@@ -1,0 +1,71 @@
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Serialization
+@model RLserver.Models.DTOs.UserDTO
+
+@{
+    ViewBag.Title = @Model.Username;
+}
+
+<div>
+    <h1>@Model.Username</h1>
+    @if (Model.ProfilePicBase64Enc != null)
+    {
+        <img src='data:image/png;base64,@(Model.ProfilePicBase64Enc)' alt='profile pic' height='48' width='48'/>;
+    }
+    else
+    {
+        <i class='far fa-user-circle fa-2x'></i>
+    }
+</div>
+
+<hr/>
+<div class="d-flex position-relative justify-content-between m-2">
+    <h5>Teams</h5>
+    <a href="#" class="btn btn-success">Invite to team <i class="fas fa-plus"></i></a>
+</div>
+
+<table class="table" id="teamsTable">
+    <thead>
+    <tr>
+        <th>Team</th>
+        <th>Members</th>
+        <th></th>
+    </tr>
+    </thead>
+</table>
+
+
+
+@section scripts
+{
+    <script>
+            var tableData = @Html.Raw(JsonConvert.SerializeObject(Model.Teams, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+            var teamsDataTable = $("#teamsTable").DataTable({
+                dom: "ftrp",
+                data: tableData,
+                autoWidth: false,
+                order: [1, "asc"],
+                columns: [
+                    {
+                        data: "",
+                        render: function(data, type, team) {
+                            return "<a class='link' href='/teams/" + team.id + "/'>" + team.name + "</a>";
+                        }
+                    },
+                    {
+                        data: "",
+                        render: function(data, type, team) {
+                            return team.members.length;
+                        }
+                    },
+                    {
+                        orderable: false,
+                        render: function(data, type, team) {
+                            return "<a class='btn btn-success'>Ask to join</a>"
+                        }
+                    }
+                ]
+            })
+
+    </script>
+}

@@ -1,0 +1,197 @@
+﻿@using System.Activities.Statements
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Serialization
+@model RLserver.Models.Team
+
+@{
+    ViewBag.Title = @Model.Name;
+}
+
+<h1>Edit</h1>
+<h4 class="text-muted">@Model.Name</h4>
+
+<hr/>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            <label>
+                <h5>Name</h5>
+                @Html.EditorFor(model => model.Name, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Name, "", new {@class = "text-danger"})
+            </label>
+        </div>
+        
+        <div class="row form-group">
+            <div class="col-md-12 col-lg-6 border-lg-right">
+                <div class="d-flex position-relative justify-content-between m-3">
+                    <h5 class="my-auto">Members</h5>
+                    <a id="addMemberBtn" class="btn btn-success text-white"><i class="fas fa-plus fa-lg"></i> Add</a>
+                </div>
+                <table class="table dataTable" id="members"></table>
+            </div>
+            
+            <div class="col-md-12 col-lg-6">
+                <div class="d-flex position-relative justify-content-between m-3">
+                    <h5 class="my-auto">Tournaments</h5>
+                    <div class="d-inline">
+                        <a class="btn btn-primary text-white"><i class="far fa-trophy-alt fa-lg"></i> Join</a>
+                        <a class="btn btn-success text-white"><i class="fas fa-plus fa-lg"></i> Create</a>
+                    </div>
+                    
+                </div>
+                <table class="table dataTable" id="tournaments"></table>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn btn-success btn-lg">Save <i class="fal fa-save fa-lg"></i></button>
+            <a href=@Url.Action("Index") class="btn btn-secondary btn-lg">Cancel <i class="far fa-times-octagon"></i></a>
+        </div>
+    </div>
+}
+
+<div id="alertsSection"></div>
+
+
+@section Scripts {
+    
+    <script>
+        var membersTableData = @Html.Raw(JsonConvert.SerializeObject(Model.Members, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+        var tournamentsTableData = @Html.Raw(JsonConvert.SerializeObject(Model.Tournaments, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+
+        
+        // members table
+        var membersTable = $("#members").DataTable({
+            dom: "tr",
+            autoWidth: false,
+            ordering: false,
+            info: false,
+            data: membersTableData,
+            language: {
+                emptyTable: "This team has no members"
+            },
+            columns: [
+                {
+                    data: "",
+                    orderable: false,
+                    render: function(data, type, user) {
+                        if (user.profilePicBase64Enc != null) {
+                            return "<img src='data:image/png;base64," +
+                                user.profilePicBase64Enc +
+                                "' alt='profile pic' height='48' width='48'/>";
+                        } else {
+                            return "<i class='far fa-user-circle fa-2x'></i>"
+                        }
+                    }
+                },
+                {
+                    data: "username",
+                    render: function(data, type, member) {
+                        return "<a href='/users/" + member.username + "' class='btn btn-link' title='" + member.username + "`s profile'>" + member.username + "</a>";
+                    }
+                },
+                {
+                    data: "",
+                    render: function(data, type, team) {
+                        return "<a href='#' class='btn btn-outline-danger'>Remove</a>";
+                    }
+                }
+            ]
+        });
+        // tournaments table
+        var tournamentsTable = $("#tournaments").DataTable({
+            dom: "tr",
+            autoWidth: false,
+            ordering: false,
+            info: false,
+            data: tournamentsTableData,
+            language: {
+                emptyTable: "This team has not participated in any tournaments"
+            },
+            columns: [
+                {
+                     render: function(data, type, tournament) {
+                        return "<a href='/tournaments/" + tournament.id + "'>" + tournament.name + "</a>";
+                    }                   
+                },
+                {
+                    data: "",
+                    render: function(data, type, tournament) {
+                        return "<a href='/tournaments/" + tournament.id + "'>" + tournament.tournamentType + "</a>";
+                    }
+                },
+                {
+                    data: "",
+                    render: function(data, type, tournament) {
+                        return tournament.currentRound;
+                    }
+                }
+            ]
+        });
+
+        var formChanged = false;
+
+        $(document).ready(function() {
+
+            $("input").on("change", function() {
+                this.classList.add("dirty");
+
+                if (!formChanged) {
+                    $("#alertsSection").append("<div class='alert alert-warning'>You have unsaved changes!</div>");
+                    formChanged = true;
+                }
+            });
+
+            $("#addMemberBtn").on("click", function() {
+                $.ajax({
+                    url: "/users/UserSelector",
+                    type: "GET"
+                }).done(function(partial) {
+                    bootbox.dialog({
+                        title: 'Add team members',
+                        message: partial,
+                        buttons: {
+                            cancel: {
+                                label: "Cancel",
+                                className: 'btn btn-secondary'
+                            },
+                            ok: {
+                                label: "Save",
+                                className: 'btn btn-success',
+                                callback: function() {
+                                    var selectedMembers = [];
+                                    $(".userSelectCheckbox > input:checked").each(function() {
+                                        selectedMembers.push(this.attributes['data-member-id'].value)
+                                    });
+                                    addMembers(selectedMembers);
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+        });
+
+        function addMembers(listOfMembers) {
+            if (listOfMembers.length >= 1) {
+                $.ajax({
+                    url: "/api/users?id=" + listOfMembers.join(","),
+                    type: "GET"
+                }).done(function(userData) {
+                    membersTable.rows.add(userData).draw().nodes().to$().addClass( 'table-new-row' );
+                });
+                if (!formChanged) {
+                    $("#alertsSection").append("<div class='alert alert-warning'>You have unsaved changes!</div>");
+                    formChanged = true;
+                }
+            }
+        }
+    </script>
+}

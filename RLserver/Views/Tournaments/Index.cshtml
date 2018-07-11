@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Tournaments";
+}
+
+@Html.Partial("_IndexHeader")
+
+<table class="table table-hover table-bordered table-responsive" id="tournaments">
+    <thead class="">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Current round</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+</table>
+
+@section scripts
+{
+    <script>
+        
+        var teamsDataTable = $("#tournaments").DataTable({
+            dom: "<'row'<'col-md-9 col-sm-12'f><'col-md-3 col-sm-12'l>>" +
+                "<'row'<tr>>" +
+                "<'row'<'col-md-4 col-sm-12'i><'col-md-8 col-sm-12'p>>",
+            ajax: {
+                url: "/api/tournaments",
+                dataSrc: ""
+            },
+            autoWidth: false,
+            columns: [
+                {
+                    data: "id"
+                },
+                {
+                    data: "name"
+                },
+                {
+                    data: "tournamentType",
+                    render: function(data, type, tournament) {
+                        switch (tournament.tournamentType) {
+                            case 0:
+                                return "All Vs. All";
+                            case 1:
+                                return "Brackets";
+                            case 2:
+                                return "Group stage";
+                            default:
+                                return "";
+                        }
+                    }
+                },
+                {
+                    data: "currentRound"
+                },
+                {
+                    data: "actions",
+                    render: function(data, type, team) {
+                        return "<a href='/tournaments/edit" + team.id + "' class='btn btn-outline-primary btn-block'>Edit <i class='far fa-pencil m-1'></i></a>";
+                    },
+                    width: "10%"
+                },
+                {
+                    data: "actions",
+                    render: function(data, type, team) {
+                        return "<a href='/tournaments/edit" + team.id + "' class='btn btn-outline-danger btn-block'>Delete <i class='far fa-trash-alt m-1'></i></a>";
+                    },
+                    width: "10%"
+                }
+            ]
+        })
+
+    </script>
+}

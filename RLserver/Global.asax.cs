@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using AutoMapper;
+using RLserver.App_Start;
 
 namespace RLserver
 {
@@ -13,6 +11,9 @@ namespace RLserver
     {
         protected void Application_Start()
         {
+            Mapper.Initialize(cfg => {
+                cfg.AddProfile<MappingProfile>();                
+            });
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
