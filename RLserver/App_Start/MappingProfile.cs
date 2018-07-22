@@ -8,8 +8,13 @@ namespace RLserver.App_Start
     {
         public MappingProfile()
         {
+            CreateMap<Tournament, int>().ConvertUsing(dest => dest.Id);
+
             CreateMap<Team, TeamDTO>();
             CreateMap<TeamDTO, Team>();
+
+            CreateMap<Team, TeamDetailsDTO>();
+            CreateMap<TeamDetailsDTO, Team>();
 
             CreateMap<Match, MatchDTO>();
             CreateMap<MatchDTO, Match>();

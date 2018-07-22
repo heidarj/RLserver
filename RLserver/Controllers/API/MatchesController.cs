@@ -1,11 +1,14 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.Http.Description;
 using System.Web.Http.ModelBinding;
+using AutoMapper;
 using RLserver.Models;
+using RLserver.Models.DTOs;
 
 namespace RLserver.Controllers.API
 {
@@ -21,84 +24,111 @@ namespace RLserver.Controllers.API
         {
             if (id == null)
             {
-                var allMatches = _db.Matches; 
+                var allMatches = _db.Matches
+                    .Include("Tournament")
+                    .Include("Teams")
+                    .AsEnumerable()
+                    .Select(Mapper.Map<MatchDTO>);
+                
                 return Ok(allMatches);
             }
-            else
+
+            if (id.Length == 0) return BadRequest();
+
+            var matches = _db.Matches
+                .Include("Tournament")
+                .Include("Teams")
+                .Select(Mapper.Map<MatchDTO>)
+                .Where(x => id.Contains(x.Id))
+                .ToArray();
+            if (matches.Any())
             {
-                var matches = _db.Matches.Where(x => id.Contains(x.Id));
                 return Ok(matches);
             }
+
+            return NotFound();
         }
 
         // GET: api/Matches/5
+        [Route("{id}")]
+        [HttpGet]
         [ResponseType(typeof(Match))]
         public IHttpActionResult GetMatch(int id)
         {
-            Match match = _db.Matches.Find(id);
-            if (match == null)
-            {
-                return NotFound();
-            }
+            var match = _db.Matches
+                .Include("Tournament")
+                .Include("Teams")
+                .SingleOrDefault(x => x.Id == id);
+            
+            if (match == null) return NotFound();
 
             return Ok(match);
         }
 
         // PUT: api/Matches/5
+        [Route("{id}")]
+        [HttpPut]
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutMatch(int id, Match match)
+        public IHttpActionResult PutMatch(int id, MatchDTO matchDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != match.Id)
+            if (id != matchDto.Id)
             {
                 return BadRequest();
             }
 
-            _db.Entry(match).State = EntityState.Modified;
+            var matchInDb = _db.Matches.Find(id);
+            
+            if (matchInDb == null) return NotFound();
 
-            try
-            {
-                _db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MatchExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            matchInDb.Name = matchDto.Name;
+
+            matchInDb.Teams = matchDto.TeamIds != null && matchDto.TeamIds.Any()
+                ? _db.Teams.Where(x => matchDto.TeamIds.Contains(x.Id)).ToList()
+                : new List<Team>();
+
+            matchInDb.Tournament = _db.Tournaments.Find(matchDto.TournamentId);
+
+            _db.SaveChangesAsync();
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST: api/Matches
-        [ResponseType(typeof(Match))]
-        public IHttpActionResult PostMatch(Match match)
+        [Route("")]
+        [HttpPost]
+        [ResponseType(typeof(MatchDTO))]
+        public IHttpActionResult PostMatch(MatchDTO matchDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _db.Matches.Add(match);
+            var newMatch = new Match
+            {
+                Name = matchDto.Name,
+                Teams = _db.Teams.Where(x => matchDto.TeamIds.Contains(x.Id)).ToList(),
+                Tournament = _db.Tournaments.Find(matchDto.TournamentId)
+            };
+
+            _db.Matches.Add(newMatch);
             _db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = match.Id }, match);
+            return CreatedAtRoute("", new { id = newMatch.Id }, newMatch);
         }
 
         // DELETE: api/Matches/5
+        [Route("{id}")]
+        [HttpDelete]
         [ResponseType(typeof(Match))]
         public IHttpActionResult DeleteMatch(int id)
         {
-            Match match = _db.Matches.Find(id);
+            var match = _db.Matches.Find(id);
             if (match == null)
             {
                 return NotFound();

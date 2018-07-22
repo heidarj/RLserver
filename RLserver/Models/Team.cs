@@ -12,6 +12,12 @@ namespace RLserver.Models
         [StringLength(255)]
         [Index(IsUnique = true)]
         public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public string Slogan { get; set; }
+
+        public string Logo { get; set; }
         
         public List<ApplicationUser> Members { get; set; }
         

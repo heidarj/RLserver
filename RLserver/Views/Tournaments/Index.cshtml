@@ -12,7 +12,7 @@
         <th>Type</th>
         <th>Current round</th>
         <th>Edit</th>
-        <th>Delete</th>
+
     </tr>
     </thead>
 </table>
@@ -35,7 +35,10 @@
                     data: "id"
                 },
                 {
-                    data: "name"
+                    data: "",
+                    render: function(data, type, tournament) {
+                        return "<a class='btn btn-block text-left' title='View details' href='/tournaments/" + tournament.id + "'/details>" + tournament.name + "</a>";
+                    }
                 },
                 {
                     data: "tournamentType",
@@ -58,14 +61,7 @@
                 {
                     data: "actions",
                     render: function(data, type, team) {
-                        return "<a href='/tournaments/edit" + team.id + "' class='btn btn-outline-primary btn-block'>Edit <i class='far fa-pencil m-1'></i></a>";
-                    },
-                    width: "10%"
-                },
-                {
-                    data: "actions",
-                    render: function(data, type, team) {
-                        return "<a href='/tournaments/edit" + team.id + "' class='btn btn-outline-danger btn-block'>Delete <i class='far fa-trash-alt m-1'></i></a>";
+                        return '<a class="btn btn-outline-info" href="/tournaments/' + team.id + '/edit">Edit <i class="fal fa-pencil-alt m-1"></i></a>';
                     },
                     width: "10%"
                 }

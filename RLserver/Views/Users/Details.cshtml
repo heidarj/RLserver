@@ -6,16 +6,17 @@
     ViewBag.Title = @Model.Username;
 }
 
-<div>
-    <h1>@Model.Username</h1>
+<div class="d-flex position-relative align-items-end">
+    
     @if (Model.ProfilePicBase64Enc != null)
     {
-        <img src='data:image/png;base64,@(Model.ProfilePicBase64Enc)' alt='profile pic' height='48' width='48'/>;
+        <img src='data:image/png;base64,@(Model.ProfilePicBase64Enc)' alt='profile pic' height='96' width='96'/>;
     }
     else
     {
-        <i class='far fa-user-circle fa-2x'></i>
+        <i class='far fa-user-circle fa-3x'></i>
     }
+    <h1 class="mb-0 ml-3">@Model.Username</h1>
 </div>
 
 <hr/>
@@ -39,9 +40,9 @@
 @section scripts
 {
     <script>
-            var tableData = @Html.Raw(JsonConvert.SerializeObject(Model.Teams, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+            var tableData = @Html.Raw(JsonConvert.SerializeObject(Model.TeamIds, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver(), ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
             var teamsDataTable = $("#teamsTable").DataTable({
-                dom: "ftrp",
+                dom: "trp",
                 data: tableData,
                 autoWidth: false,
                 order: [1, "asc"],

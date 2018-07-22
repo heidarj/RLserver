@@ -23,11 +23,18 @@ namespace RLserver.Controllers.API
                 var all = _db.Tournaments.Include(x => x.Matches).Include(x => x.Teams); 
                 return Ok(all);
             }
-            else
+            if (id.Length > 0)
             {
                 var tournaments = _db.Tournaments.Include(x => x.Matches).Include(x => x.Teams).Where(x => id.Contains(x.Id));
-                return Ok(tournaments);
+                if (tournaments.Any())
+                {
+                    return Ok(tournaments);
+                }
+
+                return NotFound();
             }
+
+            return BadRequest();
         }
 
         // GET: api/Tournaments/5

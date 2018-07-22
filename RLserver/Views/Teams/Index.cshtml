@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Serialization
+@model List<RLserver.Models.Team>
+@{
     ViewBag.Title = "Teams";
 }
 
@@ -12,8 +15,7 @@
         <th>Id</th>
         <th>Name</th>
         <th>Members</th>
-        <th>Edit</th>
-        <th>Delete</th>
+        <th></th>
     </tr>
     </thead>
 </table>
@@ -21,50 +23,42 @@
 @section scripts
 {
     <script>
-        
-            var teamsDataTable = $("#teams").DataTable({
-                dom: "<'row'<'col-md-9 col-sm-12'f><'col-md-3 col-sm-12'l>>" +
-                     "<'row'<tr>>" +
-                     "<'row'<'col-md-4 col-sm-12'i><'col-md-8 col-sm-12'p>>",
-                ajax: {
-                    url: "/api/teams",
-                    dataSrc: ""
+        var teamsTableData = @Html.Raw(JsonConvert.SerializeObject(Model, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+
+        var teamsDataTable = $("#teams").DataTable({
+            dom: "<'row'<'col-md-9 col-sm-12'f><'col-md-3 col-sm-12'l>>" +
+                "<'row'<tr>>" +
+                "<'row'<'col-md-4 col-sm-12'i><'col-md-8 col-sm-12'p>>",
+            data: teamsTableData,
+            autoWidth: false,
+            columns: [
+                {
+                    data: "id"
                 },
-                autoWidth: false,
-                columns: [
-                    {
-                        data: "id"
-                    },
-                    {
-                        data: "name",
-                        render: function(data, type, team) {
-                            return "<a class='link' href='/teams/details/" + team.id + "'>" + team.name + "</a>";
-                        }
-                    },
-                    {
-                        data: "members",
-                        render: function(data, type, team) {
-                            return team.members.length;
-                        }
-                    },
-                    {
-                        data: "",
-                        orderable: false,
-                        render: function(data, type, team) {
-                        return "<a href='/teams/edit/" + team.id + "' class='btn btn-outline-primary btn-block'>Edit <i class='far fa-pencil m-1'></i></a>";
-                        },
-                        width: "10%"
-                    },
-                    {
-                        data: "",
-                        orderable: false,
-                        render: function(data, type, team) {
-                        return "<a href='/teams/edit/" + team.id + "' class='btn btn-outline-danger btn-block'>Delete <i class='far fa-trash-alt m-1'></i></a>";
-                        },
-                        width: "10%"
+                {
+                    data: "name",
+                    render: function(data, type, team) {
+                        return "<a class='btn btn-block text-left' title='View details' href='/teams/" + team.id + "'/details>" + team.name + "</a>";
                     }
-                ]
-            })
+                },
+                {
+                    data: "members",
+                    render: function(data, type, team) {
+                        return team.members.length;
+                    }
+                },
+                {
+                    data: "",
+                    orderable: false,
+                    render: function(data, type, team) {
+                        return '<a class="btn btn-outline-info" href="/teams/' + team.id + '/edit">Edit <i class="fal fa-pencil-alt m-1"></i></a>';
+                    },
+                    width: "10%"
+                }
+            ]
+        })
 
     </script>
+    
+
 }

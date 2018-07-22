@@ -12,6 +12,9 @@ namespace RLserver.Models
     {
         public string ProfilePicBase64Enc { get; set; }
         public ICollection<Team> Teams { get; set; }
+        public string Description { get; set; }
+        public string Slogan { get; set; }
+        public string FacebookProfileUri { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

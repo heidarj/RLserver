@@ -28,16 +28,17 @@
             </label>
         </div>
         
-        <div class="row form-group">
-            <div class="col-md-12 col-lg-6 border-lg-right">
+        <div class="row">
+            <div class="col-md-12 col-lg-6 border-lg-right form-group">
                 <div class="d-flex position-relative justify-content-between m-3">
                     <h5 class="my-auto">Members</h5>
                     <a id="addMemberBtn" class="btn btn-success text-white"><i class="fas fa-plus fa-lg"></i> Add</a>
                 </div>
-                <table class="table dataTable" id="members"></table>
+                <table class="table dataTable" id="membersTable"></table>
+                <input type="hidden" id="Members" value="@Model.Members.Select(x => new {Id = x.Id}).ToList()"/>
             </div>
             
-            <div class="col-md-12 col-lg-6">
+            <div class="col-md-12 col-lg-6 form-group">
                 <div class="d-flex position-relative justify-content-between m-3">
                     <h5 class="my-auto">Tournaments</h5>
                     <div class="d-inline">
@@ -46,7 +47,8 @@
                     </div>
                     
                 </div>
-                <table class="table dataTable" id="tournaments"></table>
+                <table class="table dataTable" id="tournamentsTable"></table>
+
             </div>
         </div>
         
@@ -63,12 +65,12 @@
 @section Scripts {
     
     <script>
-        var membersTableData = @Html.Raw(JsonConvert.SerializeObject(Model.Members, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
-        var tournamentsTableData = @Html.Raw(JsonConvert.SerializeObject(Model.Tournaments, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+        var membersTableData = @Html.Raw(JsonConvert.SerializeObject(Model.Members, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver(), ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+        var tournamentsTableData = @Html.Raw(JsonConvert.SerializeObject(Model.Tournaments, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver(), ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
 
         
         // members table
-        var membersTable = $("#members").DataTable({
+        var membersTable = $("#membersTable").DataTable({
             dom: "tr",
             autoWidth: false,
             ordering: false,
@@ -92,9 +94,9 @@
                     }
                 },
                 {
-                    data: "username",
+                    data: "",
                     render: function(data, type, member) {
-                        return "<a href='/users/" + member.username + "' class='btn btn-link' title='" + member.username + "`s profile'>" + member.username + "</a>";
+                        return "<a href='/users/" + member.userName + "' class='btn btn-link' title='" + member.userName + "`s profile'>" + member.userName + "</a>";
                     }
                 },
                 {
@@ -106,7 +108,7 @@
             ]
         });
         // tournaments table
-        var tournamentsTable = $("#tournaments").DataTable({
+        var tournamentsTable = $("#tournamentsTable").DataTable({
             dom: "tr",
             autoWidth: false,
             ordering: false,

@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace RLserver.Models.DTOs
 {
     public class TournamentDTO
     {
-        public ICollection<Team> Teams { get; set; }
-        public TournamentType TournamentType { get; set; }
-        // ReSharper disable once InconsistentNaming
-        private List<Round> _matches { get; set; }
+        public int Id { get; set; }
 
-        public List<Round> Matches { get; set; }
+        public string Name { get; set; }
+        [DefaultValue(new int[]{})]
+        public int[] TeamIds { get; set; }
+
+        public TournamentType TournamentType { get; set; }
+
+        public int CurrentRound { get; set; }
+        public int TotalRounds { get; set; }
     }
 }

@@ -78,13 +78,22 @@ namespace RLserver.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,TournamentType")] Tournament tournament)
+        public ActionResult Edit(Tournament tournament)
         {
             if (!ModelState.IsValid) return View(tournament);
+
+            var tournamentInDb = _db.Tournaments.Find(tournament.Id);
+
+            if (tournamentInDb == null)
+            {
+                return HttpNotFound();
+            }
+
+            tournamentInDb.Name = tournament.Name;
+            tournamentInDb.TournamentType = tournament.TournamentType;
             
-            _db.Entry(tournament).State = EntityState.Modified;
             _db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", new {Id = tournament.Id});
         }
 
         // GET: Tournaments/Delete/5

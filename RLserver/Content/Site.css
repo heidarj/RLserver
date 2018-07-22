@@ -62,7 +62,9 @@ thead {
     background-color: #fff4de;
 }
 
-
+.navbar-brand {
+    font-size: 1.5em;
+}
 
 
 

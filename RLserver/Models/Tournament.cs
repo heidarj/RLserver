@@ -16,6 +16,9 @@ namespace RLserver.Models
         
         [Required]
         public TournamentType TournamentType { get; set; }
+
+        public int CurrentRound { get; set; }
+        public int TotalRounds { get; set; }
         
         // ReSharper disable once InconsistentNaming
         private List<Round> _matches { get; set; }
@@ -36,11 +39,6 @@ namespace RLserver.Models
             }
         }
         
-        public int CurrentRound { get; set; }
-        public int TotalRounds { get; set; }
-
-
-
         public Tournament()
         {
             Teams = new List<Team>();
@@ -97,5 +95,10 @@ namespace RLserver.Models
     {
         public int Id { get; set; }
         public List<Match> Matches { get; set; }
+
+        public Round()
+        {
+            Matches = new List<Match>();
+        }
     }
 }

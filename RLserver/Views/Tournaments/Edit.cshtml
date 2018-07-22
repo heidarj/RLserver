@@ -1,4 +1,6 @@
-﻿@model RLserver.Models.Tournament
+﻿@using Newtonsoft.Json
+@using Newtonsoft.Json.Serialization
+@model RLserver.Models.Tournament
 
 @{
     ViewBag.Title = "Edit";
@@ -16,19 +18,36 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
-
+        
         <div class="form-group">
-            @Html.LabelFor(model => model.TournamentType, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.TournamentType, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TournamentType, "", new { @class = "text-danger" })
+            @Html.LabelFor(model => model.Name)
+            <div>
+                @Html.TextBoxFor(model => model.Name, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+            @Html.LabelFor(model => model.TournamentType)
+            <div>
+                @Html.EnumDropDownListFor(model => model.TournamentType, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TournamentType, "", new { @class = "text-danger" })
             </div>
+        </div>
+        
+        <div class="form-group">
+            <table id="matchListTable" class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Matches</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary"/>
         </div>
     </div>
 }
@@ -38,5 +57,35 @@
 </div>
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        var matchListTableData = @Html.Raw(JsonConvert.SerializeObject(Model.Matches, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
+
+        var matchListTable = $("#matchListTable").DataTable({
+            dom: "tr",
+            autoWidth: false,
+            ordering: false,
+            info: false,
+            data: matchListTableData,
+            language: {
+                emptyTable: "No matches have been planned for this tournament"
+            },
+            columns: [
+                {
+                    data: "id" 
+                },
+                {
+                    data: "",
+                    render: function(data, type, tournament) {
+                        return tournament.matches.toString();
+                    }
+                },
+                {
+                    data: "",
+                    render: function(data, type, tournament) {
+                        return tournament.currentRound;
+                    }
+                }
+            ]
+        });
+    </script>  
 }

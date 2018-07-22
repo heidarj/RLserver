@@ -52,14 +52,14 @@ namespace RLserver.Controllers
             var teamInDb = new Team
             {
                 Name = team.Name,
-                Matches = team.Matches != null && team.Matches.Length > 0
-                    ? _db.Matches.Where(x => team.Matches.Contains(x.Id)).ToList()
+                Matches = team.MatchIds != null && team.MatchIds.Length > 0
+                    ? _db.Matches.Where(x => team.MatchIds.Contains(x.Id)).ToList()
                     : new List<Match>(),
-                Members = team.Members != null && team.Members.Length > 0
-                    ? _db.Users.Where(x => team.Members.Contains(x.Id)).ToList()
+                Members = team.MemberIds != null && team.MemberIds.Length > 0
+                    ? _db.Users.Where(x => team.MemberIds.Contains(x.Id)).ToList()
                     : new List<ApplicationUser>(),
-                Tournaments = team.Tournaments != null && team.Tournaments.Length > 0
-                    ? _db.Tournaments.Where(x => team.Tournaments.Contains(x.Id)).ToList()
+                Tournaments = team.TournamentIds != null && team.TournamentIds.Length > 0
+                    ? _db.Tournaments.Where(x => team.TournamentIds.Contains(x.Id)).ToList()
                     : new List<Tournament>()
             };
 
@@ -98,14 +98,14 @@ namespace RLserver.Controllers
             if (teamInDb != null)
             {
                 teamInDb.Name = team.Name;
-                teamInDb.Matches = team.Matches != null && team.Matches.Length > 0
-                    ? _db.Matches.Where(x => team.Matches.Contains(x.Id)).ToList()
+                teamInDb.Matches = team.MatchIds != null && team.MatchIds.Length > 0
+                    ? _db.Matches.Where(x => team.MatchIds.Contains(x.Id)).ToList()
                     : new List<Match>();
-                teamInDb.Members = team.Members != null && team.Members.Length > 0
-                    ? _db.Users.Where(x => team.Members.Contains(x.Id)).ToList()
+                teamInDb.Members = team.MemberIds != null && team.MemberIds.Length > 0
+                    ? _db.Users.Where(x => team.MemberIds.Contains(x.Id)).ToList()
                     : new List<ApplicationUser>();
-                teamInDb.Tournaments = team.Matches != null && team.Tournaments.Length > 0
-                    ? _db.Tournaments.Where(x => team.Tournaments.Contains(x.Id)).ToList()
+                teamInDb.Tournaments = team.MatchIds != null && team.TournamentIds.Length > 0
+                    ? _db.Tournaments.Where(x => team.TournamentIds.Contains(x.Id)).ToList()
                     : new List<Tournament>();
             }
 

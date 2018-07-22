@@ -226,9 +226,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\API\MatchesController.cs" />
+    <Compile Include="Controllers\API\Matches\MatchesTeamsController.cs" />
+    <Compile Include="Controllers\API\Matches\MatchesTournamentController.cs" />
     <Compile Include="Controllers\API\TeamsController.cs" />
     <Compile Include="Controllers\API\TournamentsController.cs" />
     <Compile Include="Controllers\API\UsersController.cs" />
+    <Compile Include="Controllers\API\MyApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MatchesController.cs" />
@@ -270,13 +273,24 @@
     <Compile Include="Migrations\201807111152157_revertFuu.Designer.cs">
       <DependentUpon>201807111152157_revertFuu.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807112018527_editTeamModel.cs" />
+    <Compile Include="Migrations\201807112018527_editTeamModel.Designer.cs">
+      <DependentUpon>201807112018527_editTeamModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807141100316_MatchShouldOnlyHaveOneTournament.cs" />
+    <Compile Include="Migrations\201807141100316_MatchShouldOnlyHaveOneTournament.Designer.cs">
+      <DependentUpon>201807141100316_MatchShouldOnlyHaveOneTournament.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DTOs\MatchDTO.cs" />
+    <Compile Include="Models\DTOs\TeamDetailsDTO.cs" />
     <Compile Include="Models\DTOs\TeamDTO.cs" />
     <Compile Include="Models\DTOs\TournamentDTO.cs" />
+    <Compile Include="Models\DTOs\UserDetailsDTO.cs" />
     <Compile Include="Models\DTOs\UserDTO.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\IModelRepository.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Match.cs" />
     <Compile Include="Models\Team.cs" />
@@ -664,6 +678,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -694,6 +709,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807111152157_revertFuu.resx">
       <DependentUpon>201807111152157_revertFuu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807112018527_editTeamModel.resx">
+      <DependentUpon>201807112018527_editTeamModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807141100316_MatchShouldOnlyHaveOneTournament.resx">
+      <DependentUpon>201807141100316_MatchShouldOnlyHaveOneTournament.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
